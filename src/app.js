@@ -23,7 +23,7 @@ export class App {
 
   async middleware() {
     this.express.use(express.json({ limit: '100mb' }));
-    this.express.use(express.urlencoded({ limit: '100mb', extended: true }));
+    this.express.use(express.urlencoded({ limit: '200mb', extended: true }));
     this.express.use(AuthMiddleware);
   }
 
