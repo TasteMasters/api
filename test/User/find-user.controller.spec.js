@@ -38,7 +38,7 @@ describe('FindUserController', () => {
     const result = await request('http://localhost:3001/v1')
       .get(`/users/invalid-id`)
       .set(
-        'Authorization',+
+        'Authorization',
         'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsQGVtYWlsLmNvbSIsImlhdCI6MTcxMjQ5NDIxNn0.weB7dsO581gkGEr1KzLzYOE8UpodhvtmndaFTU_YNNA'
       );
 

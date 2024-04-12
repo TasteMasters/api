@@ -1,5 +1,5 @@
 import BaseController from '../../../../class_base/controller.base.js';
-import { WorkshopRepository } from '../../Repositories/workshop.repository.js'
+import { WorkshopRepository } from '../../Repositories/workshop.repository.js';
 
 export default class ListWorshopsController extends BaseController {
   method = 'GET';
@@ -9,9 +9,8 @@ export default class ListWorshopsController extends BaseController {
     try {
       const workshops = await WorkshopRepository.findAll();
 
-      
-      if(!workshops){
-        return super.send(res, { data: undefined });
+      if (!workshops) {
+        return super.send(res, { data: [] });
       }
 
       const workshopsJson = [];
@@ -20,7 +19,7 @@ export default class ListWorshopsController extends BaseController {
         workshopsJson.push(workshop.toJson());
       }
 
-      super.send(res, { data: usersJson });
+      super.send(res, { data: workshopsJson });
     } catch (err) {
       next(err);
     }
