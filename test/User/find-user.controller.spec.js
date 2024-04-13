@@ -13,7 +13,7 @@ describe('FindUserController', () => {
   });
 
   it('should be able to get a user', async () => {
-    const result = await request('http://localhost:3333/v1')
+    const result = await request('http://localhost:3001/v1')
       .get(`/users/${user.id}`)
       .set(
         'Authorization',
@@ -24,13 +24,18 @@ describe('FindUserController', () => {
   });
 
   it('should not be able to get a user with a not exist id', async () => {
-    const result = await request('http://localhost:3333/v1').get(`/users/adfb5ecc-9a5d-4de0-8be3-3cbe35008482`);
+    const result = await request('http://localhost:3001/v1')
+    .get(`/users/adfb5ecc-9a5d-4de0-8be3-3cbe35008482`)
+    .set(
+      'Authorization',
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsQGVtYWlsLmNvbSIsImlhdCI6MTcxMjQ5NDIxNn0.weB7dsO581gkGEr1KzLzYOE8UpodhvtmndaFTU_YNNA'
+    );
 
     deepEqual(result.status, 404);
   });
 
   it('should not be able to get a user with invalid id', async () => {
-    const result = await request('http://localhost:3333/v1')
+    const result = await request('http://localhost:3001/v1')
       .get(`/users/invalid-id`)
       .set(
         'Authorization',
