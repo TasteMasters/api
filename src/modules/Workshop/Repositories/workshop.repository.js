@@ -35,5 +35,16 @@ export class WorkshopRepository {
     const workshop = new WorkshopEntity(rows[0]);
 
     return workshop;
-  }
 }
+  /* Deletes a workshop from the database by its ID.
+   * @param {number} id - The ID of the workshop to delete.
+   * @returns {Promise<void>} A Promise that resolves when the workshop is successfully deleted.
+   */
+  static async delete(id) {
+    try {
+      await Client.query('DELETE FROM workshops WHERE id = $1;', [id]);
+      
+    } catch (error) {
+      throw error;
+    }
+  }
