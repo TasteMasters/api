@@ -20,7 +20,23 @@ export class WorkshopRepository {
   }
 
   /**
-   * Deletes a workshop from the database by its ID.
+   * Finds a workshop by its ID.
+   * @param {number} id - The ID of the workshop to find.
+   * @returns {WorkshopEntity | undefined} The workshop entity if found, or undefined if not found.
+   */
+
+  static async findById(id) {
+    const { rows } = await Client.query('SELECT * FROM workshops WHERE id = $1;', [id]);
+
+    if (!rows || rows.length === 0) {
+      return undefined;
+    }
+
+    const workshop = new WorkshopEntity(rows[0]);
+
+    return workshop;
+}
+  /* Deletes a workshop from the database by its ID.
    * @param {number} id - The ID of the workshop to delete.
    * @returns {Promise<void>} A Promise that resolves when the workshop is successfully deleted.
    */
@@ -32,4 +48,3 @@ export class WorkshopRepository {
       throw error;
     }
   }
-}
