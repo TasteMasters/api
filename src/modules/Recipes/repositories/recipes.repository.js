@@ -31,6 +31,16 @@ export class RecipeRepository {
     return recipes;
   }
 
+  static async delete(id) {
+    const recipeDeleted = await Client.query('DELETE FROM recipes WHERE id = $1;', [id]);
+
+    if (recipeDeleted.rowCount === 0) {
+      return false;
+    }
+
+    return true;
+  }
+
   static async create({ author_id, title, description }) {
     try {
       const recipesCreated = await Client.query(
