@@ -1,14 +1,8 @@
 import { Client } from '../../../../database/database.service.js';
-import { UserEntity } from '../../../entities/user.entity.js';
 import { v4 as uuid } from 'uuid';
 import { RecipeEntity } from '../../../entities/recipes.entity.js';
 
 export class RecipeRepository {
-  /**
-   *
-   * @param {string} id
-   * @return {UserEntity | undefined}
-   */
   static async findById(id) {
     const { rows } = await Client.query('SELECT * FROM recipes WHERE id = $1;', [id]);
 
@@ -16,7 +10,7 @@ export class RecipeRepository {
       return undefined;
     }
 
-    const user = new UserEntity(rows[0]);
+    const user = new RecipeEntity(rows[0]);
 
     return user;
   }
@@ -35,6 +29,16 @@ export class RecipeRepository {
     }
 
     return recipes;
+  }
+
+  static async delete(id) {
+    const recipeDeleted = await Client.query('DELETE FROM recipes WHERE id = $1;', [id]);
+
+    if (recipeDeleted.rowCount === 0) {
+      return false;
+    }
+
+    return true;
   }
 
   static async create({ author_id, title, description }) {

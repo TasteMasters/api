@@ -5,4 +5,6 @@ export const Message = {
   INVALID_ID: 'ID inválido',
   DELETE_ERROR: 'Erro ao deletar evento',
   UNAUTHORIZED: 'Sem permissão',
+
+  RECIPE_NOT_FOUND: 'Receita não encontrada',
 };
