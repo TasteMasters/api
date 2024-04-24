@@ -59,4 +59,19 @@ export class RecipeRepository {
       throw error;
     }
   }
+
+  static async update(id, { title, description }) {
+    const { rows } = await Client.query(
+      'UPDATE recipes SET title = COALESCE($1, title), description = COALESCE($2, description) WHERE id = $3 RETURNING *;',
+      [title, description, id]
+    );
+
+    if (!rows || rows.length === 0) {
+      return undefined;
+    }
+
+    const recipe = new RecipeEntity(rows[0]);
+
+    return recipe;
+  }
 }

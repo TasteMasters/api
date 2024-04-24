@@ -43,7 +43,7 @@ export default class BaseController {
         }
 
         this.handle(req, res, next);
-      }else {
+      } else {
         this.handle(req, res, next);
       }
     } catch (err) {
