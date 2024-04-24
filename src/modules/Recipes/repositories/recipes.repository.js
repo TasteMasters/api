@@ -28,13 +28,13 @@ export class RecipeRepository {
       return [];
     }
 
-    let users = [];
+    let recipes = [];
 
-    for (let user of rows) {
-      users.push(new UserEntity(user));
+    for (let recipe of rows) {
+      recipes.push(new RecipeEntity(recipe));
     }
 
-    return users;
+    return recipes;
   }
 
   static async create({ author_id, title, description }) {
