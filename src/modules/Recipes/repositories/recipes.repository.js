@@ -80,7 +80,7 @@ export class RecipeRepository {
     }
   }
 
-  static async update(id, { title, description }) {
+  static async update(id, { title, description, ingredients }) {
     const { rows } = await Client.query(
       'UPDATE recipes SET title = COALESCE($1, title), description = COALESCE($2, description), updated_at = $3 WHERE id = $4 RETURNING *;',
       [title, description, new Date(), id]
@@ -90,7 +90,42 @@ export class RecipeRepository {
       return undefined;
     }
 
+    if (ingredients && ingredients.length > 0) {
+      const recipeIngredients = await RecipeIngredientRepository.findByRecipeId(id);
+
+      await Promise.all(
+        recipeIngredients.map(async (recipeIngredient) => {
+          const ingredient = ingredients.find((ingredient) => ingredient.id === recipeIngredient.id);
+
+          if (ingredient) {
+            await RecipeIngredientRepository.update(ingredient.id, {
+              name: ingredient.name,
+              amount: ingredient.amount,
+              image: ingredient.image,
+            });
+          } else {
+            await RecipeIngredientRepository.delete(recipeIngredient.id);
+          }
+
+          ingredients = ingredients.filter((ingredient) => ingredient.id !== recipeIngredient.id);
+        })
+      );
+
+      await Promise.all(
+        ingredients.map(async (ingredient) => {
+          await RecipeIngredientRepository.create({
+            recipe_id: id,
+            name: ingredient.name,
+            amount: ingredient.amount,
+            image: ingredient.image,
+          });
+        })
+      );
+    }
+
     const recipe = new RecipeEntity(rows[0]);
+    ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
+    recipe.ingredients = ingredients;
 
     return recipe;
   }

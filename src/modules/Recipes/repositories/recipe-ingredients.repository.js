@@ -39,4 +39,29 @@ export class RecipeIngredientRepository {
 
     return recipeIngredient;
   }
+
+  static async update(id, { name, amount, image }) {
+    const recipeIngredientUpdated = await Client.query(
+      'UPDATE recipe_ingredients SET name = COALESCE($1,name), amount = COALESCE($2,amount), image = COALESCE($3,image), updated_at = $4 WHERE id = $5 RETURNING *;',
+      [name, amount, image, new Date(), id]
+    );
+
+    if (!recipeIngredientUpdated || !recipeIngredientUpdated.rows || !recipeIngredientUpdated.rows.length === 0) {
+      return undefined;
+    }
+
+    const recipeIngredient = new RecipeIngredientEntity(recipeIngredientUpdated.rows[0]);
+
+    return recipeIngredient;
+  }
+
+  static async delete(id) {
+    const recipeIngredientDeleted = await Client.query('DELETE FROM recipe_ingredients WHERE id = $1;', [id]);
+
+    if (recipeIngredientDeleted.rowCount === 0) {
+      return false;
+    }
+
+    return true;
+  }
 }
