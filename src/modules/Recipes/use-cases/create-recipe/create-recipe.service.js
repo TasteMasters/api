@@ -5,7 +5,7 @@ import { UserRepository } from '../../../User/repositories/user.repository.js';
 import { RecipeRepository } from '../../repositories/recipes.repository.js';
 
 export class CreateRecipeService extends ServiceBase {
-  async execute({ author_id, title, description }) {
+  async execute({ author_id, title, description, ingredients }) {
     const user = await UserRepository.findById(author_id);
 
     if (!user) {
@@ -16,6 +16,7 @@ export class CreateRecipeService extends ServiceBase {
       author_id,
       title,
       description,
+      ingredients,
     });
 
     return recipe.toJson();

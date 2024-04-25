@@ -64,7 +64,10 @@ export class RecipeEntity {
   }
 
   toJson() {
-    const ingredients = this.#ingredients.map((ingredient) => ingredient.toJson());
+    let ingredients = [];
+    if (this.#ingredients) {
+      ingredients = this.#ingredients.map((ingredient) => ingredient.toJson());
+    }
 
     return {
       id: this.#id,
