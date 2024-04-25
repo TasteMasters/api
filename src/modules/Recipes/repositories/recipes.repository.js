@@ -1,6 +1,7 @@
 import { Client } from '../../../../database/database.service.js';
 import { v4 as uuid } from 'uuid';
 import { RecipeEntity } from '../../../entities/recipes.entity.js';
+import { RecipeIngredientRepository } from './recipe-ingredients.repository.js';
 
 export class RecipeRepository {
   static async findById(id) {
@@ -11,6 +12,7 @@ export class RecipeRepository {
     }
 
     const user = new RecipeEntity(rows[0]);
+    user.ingredients = await RecipeIngredientRepository.findByRecipeId(user.id);
 
     return user;
   }
@@ -22,11 +24,14 @@ export class RecipeRepository {
       return [];
     }
 
-    let recipes = [];
+    const recipes = await Promise.all(
+      rows.map(async (row) => {
+        const recipe = new RecipeEntity(row);
+        recipe.ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
 
-    for (let recipe of rows) {
-      recipes.push(new RecipeEntity(recipe));
-    }
+        return recipe;
+      })
+    );
 
     return recipes;
   }
