@@ -6,5 +6,9 @@ export const Message = {
   UNAUTHORIZED: 'Sem permissão',
   INVALID_DATE:'A data fornecida é inválida.',
   CREATE_EVENT_SUCCESS: 'Evento criado com sucesso.',
-  FAIL_EVENT_SUCCESS: 'Houve um erro ao criar o evento! Tente mais tarde.'
+  CREATE_EVENT_FAIL: 'Houve um erro ao criar o evento! Tente mais tarde.',
+  EVENT_NOT_FOUND: 'Evento não encontrado',
+  INVALID_ID: 'ID inválido',
+  DELETE_ERROR: 'Erro ao deletar evento',
+  RECIPE_NOT_FOUND: 'Receita não encontrada',
 };
