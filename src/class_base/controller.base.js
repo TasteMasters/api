@@ -7,6 +7,7 @@ export default class BaseController {
   path;
   router;
   authenticated;
+  before = [];
 
   constructor(method = 'GET', path = '/', authenticated = true) {
     this.router = express.Router();
@@ -16,18 +17,30 @@ export default class BaseController {
   }
 
   register() {
+    const middlewareStack = [
+      (req, res, next) => {
+        if (this.authenticated && !req.authUser) {
+          return next(new UnauthorizedException(Message.UNAUTHORIZED));
+        }
+
+        next();
+      },
+      ...this.before,
+      this.middleware.bind(this),
+    ];
+
     switch (this.method) {
       case 'GET':
-        this.router.get(this.path, this.middleware.bind(this));
+        this.router.get(this.path, ...middlewareStack);
         break;
       case 'POST':
-        this.router.post(this.path, this.middleware.bind(this));
+        this.router.post(this.path, ...middlewareStack);
         break;
       case 'DELETE':
-        this.router.delete(this.path, this.middleware.bind(this));
+        this.router.delete(this.path, ...middlewareStack);
         break;
       case 'PATCH':
-        this.router.patch(this.path, this.middleware.bind(this));
+        this.router.patch(this.path, ...middlewareStack);
         break;
       default:
         throw new Error('Method Unknow');
@@ -37,15 +50,7 @@ export default class BaseController {
 
   async middleware(req, res, next) {
     try {
-      if (this.authenticated) {
-        if (!req.authUser) {
-          throw new UnauthorizedException(Message.UNAUTHORIZED);
-        }
-
-        this.handle(req, res, next);
-      } else {
-        this.handle(req, res, next);
-      }
+      this.handle(req, res, next);
     } catch (err) {
       next(err);
     }
