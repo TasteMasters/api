@@ -1,6 +1,5 @@
 import { Client } from '../../../../database/database.service.js';
 import { WorkshopEntity } from '../../../entities/workshop.entity.js';
-import { v4 as uuid } from 'uuid';
 
 export class WorkshopRepository {
   /**
@@ -100,6 +99,7 @@ export class WorkshopRepository {
   static async delete(id) {
     try {
       await Client.query('DELETE FROM workshops WHERE id = $1;', [id]);
+
       return true
     } catch (error) {
       throw error;
