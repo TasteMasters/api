@@ -11,19 +11,19 @@ export default class DeleteWorshopController extends BaseController {
   async handle(req, res, next) {
     try {
       const idParser = z.string().uuid();
-      const idResult = idParser.safeParse(req.params.id);
+      const idResult = idParser.parse(req.params.id);
 
-      if (!idResult.success) {
+      if (!idResult) {
         throw new NotFoundException(Message.INVALID_ID);
       }
 
-      const workshop = await WorkshopRepository.delete(idResult.data);
+      const workshop = await WorkshopRepository.delete(idResult);
 
       if (!workshop) {
         throw new NotFoundException(Message.DELETE_ERROR);
       }
 
-      super.send(res);
+      super.send(res, {data: Message.DELETE_EVENT_SUCCESS});
     } catch (err) {
       next(err);
     }
