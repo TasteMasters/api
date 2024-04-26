@@ -24,16 +24,17 @@ export default class CreateWorkshopController extends BaseController {
 
       await WorkshopRepository.create(workshopData, topicData, imagePath);
 
-      /* const data = {
+      const data = {
         data_work: workshopData,
         data_topic: topicData,
-      }; */
+        image: imagePath,
+      };
 
       super.send(res, { data: Message.CREATE_EVENT_SUCCESS });
 
       return true;
     } catch (error) {
-      throw new Error(Message.FAIL_EVENT_SUCCESS);
+      throw new Error(Message.CREATE_EVENT_FAIL);
     }
   }
 
