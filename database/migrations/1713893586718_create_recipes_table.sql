@@ -9,7 +9,7 @@ CREATE TABLE public.recipes
         REFERENCES public.users (id) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE
-        NOT VALID
+        NOT VALID,
     created_at date NOT NULL,
-    updated_at date,
+    updated_at date
 );
