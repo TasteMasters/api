@@ -6,11 +6,12 @@ export class RecipeEntity {
 
   #ingredients;
   #tags;
+  #images;
 
   #created_at;
   #updated_at;
 
-  constructor({ id, author_id, title, description, created_at, updated_at, ingredients, tags }) {
+  constructor({ id, author_id, title, description, created_at, updated_at, ingredients, tags, images }) {
     this.#id = id;
     this.#author_id = author_id;
     this.#title = title;
@@ -19,6 +20,7 @@ export class RecipeEntity {
     this.#updated_at = updated_at;
     this.#ingredients = ingredients;
     this.#tags = tags;
+    this.#images = images;
   }
 
   get id() {
@@ -53,6 +55,10 @@ export class RecipeEntity {
     return this.#tags;
   }
 
+  get images() {
+    return this.#images;
+  }
+
   set title(title) {
     this.#title = title;
   }
@@ -73,6 +79,10 @@ export class RecipeEntity {
     this.#tags = tags;
   }
 
+  set images(images) {
+    this.#images = images;
+  }
+
   toJson() {
     let ingredients = [];
     if (this.#ingredients) {
@@ -84,6 +94,11 @@ export class RecipeEntity {
       tags = this.#tags.map((tag) => tag.toJson());
     }
 
+    let images = [];
+    if (this.#images) {
+      images = this.#images.map((image) => image.toJson());
+    }
+
     return {
       id: this.#id,
       author_id: this.#author_id,
@@ -91,6 +106,7 @@ export class RecipeEntity {
       description: this.#description,
       ingredients,
       tags,
+      images,
       created_at: this.#created_at,
       updated_at: this.#updated_at,
     };

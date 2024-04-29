@@ -3,6 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { RecipeEntity } from '../../../entities/recipes.entity.js';
 import { RecipeIngredientRepository } from './recipe-ingredients.repository.js';
 import { RecipeTagsRepository } from './recipe-tags.repository.js';
+import { RecipeImagesRepository } from './recipe-image.repository.js';
 
 export class RecipeRepository {
   static async findById(id) {
@@ -15,6 +16,7 @@ export class RecipeRepository {
     const user = new RecipeEntity(rows[0]);
     user.ingredients = await RecipeIngredientRepository.findByRecipeId(user.id);
     user.tags = await RecipeTagsRepository.findByRecipeId(user.id);
+    user.images = await RecipeImagesRepository.findByRecipeId(user.id);
 
     return user;
   }
@@ -31,6 +33,7 @@ export class RecipeRepository {
         const recipe = new RecipeEntity(row);
         recipe.ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
         recipe.tags = await RecipeTagsRepository.findByRecipeId(recipe.id);
+        recipe.images = await RecipeImagesRepository.findByRecipeId(recipe.id);
 
         return recipe;
       })
@@ -49,7 +52,7 @@ export class RecipeRepository {
     return true;
   }
 
-  static async create({ author_id, title, description, ingredients, tags }) {
+  static async create({ author_id, title, description, ingredients, tags, images }) {
     try {
       const recipesCreated = await Client.query(
         'INSERT INTO recipes (id, author_id, title, description, created_at) VALUES ($1,$2,$3,$4,$5) RETURNING *;',
@@ -71,17 +74,30 @@ export class RecipeRepository {
               amount: ingredient.amount,
               image: ingredient.image,
             });
-          }),
+          })
+        );
+
+        if (tags && tags.length > 0) {
           tags.map(async (tag) => {
             await RecipeTagsRepository.create({
               recipe_id: recipe.id,
               tag_id: tag,
             });
-          })
-        );
+          });
+        }
+
+        if (images && images.length > 0) {
+          images.map(async (image) => {
+            await RecipeImagesRepository.create({
+              recipe_id: recipe.id,
+              image: image,
+            });
+          });
+        }
 
         recipe.ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
         recipe.tags = await RecipeTagsRepository.findByRecipeId(recipe.id);
+        recipe.images = await RecipeImagesRepository.findByRecipeId(recipe.id);
       }
 
       return recipe;
@@ -90,7 +106,7 @@ export class RecipeRepository {
     }
   }
 
-  static async update(id, { title, description, ingredients, tags }) {
+  static async update(id, { title, description, ingredients, tags, images }) {
     const { rows } = await Client.query(
       'UPDATE recipes SET title = COALESCE($1, title), description = COALESCE($2, description), updated_at = $3 WHERE id = $4 RETURNING *;',
       [title, description, new Date(), id]
@@ -158,11 +174,35 @@ export class RecipeRepository {
       );
     }
 
+    if (images && images.length > 0) {
+      const recipeImages = await RecipeImagesRepository.findByRecipeId(id);
+
+      await Promise.all(
+        recipeImages.map(async (recipeImage) => {
+          const image = images.find((image) => image === recipeImage.id);
+
+          if (!image) {
+            await RecipeImagesRepository.delete(recipeImage.id);
+          }
+
+          images = images.filter((image) => image !== recipeImage.id);
+        })
+      );
+
+      await Promise.all(
+        images.map(async (image) => {
+          await RecipeImagesRepository.create({
+            recipe_id: id,
+            image: image,
+          });
+        })
+      );
+    }
+
     const recipe = new RecipeEntity(rows[0]);
-    ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
-    tags = await RecipeTagsRepository.findByRecipeId(recipe.id);
-    recipe.ingredients = ingredients;
-    recipe.tags = tags;
+    recipe.ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
+    recipe.tags = await RecipeTagsRepository.findByRecipeId(recipe.id);
+    recipe.images = await RecipeImagesRepository.findByRecipeId(recipe.id);
 
     return recipe;
   }

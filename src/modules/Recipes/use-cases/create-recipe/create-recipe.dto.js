@@ -13,4 +13,5 @@ export const CreateRecipesDto = z.object({
     )
     .optional(),
   tags: z.array(z.string()).optional(),
+  images: z.array(z.string()).optional(),
 });
