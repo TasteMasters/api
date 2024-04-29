@@ -1,25 +1,18 @@
 import { JwtService } from '../modules/Auth/jwt.service.js';
-import { z } from 'zod';
 import { UserRepository } from '../modules/User/repositories/user.repository.js';
 
-const authDto = z.string().startsWith('Bearer ');
-
 const AuthMiddleware = async (req, res, next) => {
-  if (req.headers && req.headers.authorization !== undefined) {
-    const authorization = authDto.safeParse(req.headers.authorization);
+  const tokenCookie = req.cookies.token;
+  if (tokenCookie) {
+    try {
+      const jwtData = await JwtService.verify(tokenCookie);
 
-    if (authorization && authorization.success) {
-      const token = authorization.data.replace('Bearer ', '');
+      const user = await UserRepository.findById(jwtData.id);
 
-      try {
-        const jwtData = await JwtService.verify(token);
-
-        const user = await UserRepository.findByEmail(jwtData.email);
-
-        if (user) req.authUser = user;
-      } catch (err) {
-        next(err);
-      }
+      if (user) req.authUser = user;
+    } catch (err) {
+      console.log(err);
+      next(err);
     }
   }
   next();
