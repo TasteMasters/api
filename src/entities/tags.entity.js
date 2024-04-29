@@ -35,7 +35,7 @@ export class TagsEntity {
     this.#updated_at = updated_at;
   }
 
-  toJSON() {
+  toJson() {
     return {
       id: this.id,
       name: this.name,

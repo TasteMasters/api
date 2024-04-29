@@ -22,6 +22,16 @@ export class TagsRepository {
     return rows.map((row) => new TagsEntity(row));
   }
 
+  static async findByName(name) {
+    const { rows } = await Client.query('SELECT * FROM tags WHERE name = $1;', [name]);
+
+    if (!rows || rows.length === 0) {
+      return undefined;
+    }
+
+    return new TagsEntity(rows[0]);
+  }
+
   static async delete(id) {
     const tagDeleted = await Client.query('DELETE FROM tags WHERE id = $1;', [id]);
 

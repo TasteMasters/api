@@ -64,12 +64,9 @@ export class RecipeIngredientEntity {
   toJson() {
     return {
       id: this.#id,
-      recipe_id: this.#recipe_id,
       name: this.#name,
       amount: this.#amount,
       image: this.#image,
-      created_at: this.#created_at,
-      updated_at: this.#updated_at,
     };
   }
 }
