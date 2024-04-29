@@ -1,8 +1,12 @@
+import { MulterError } from 'multer';
 import { ZodError } from 'zod';
 
 const ErrorHandler = (err, req, res, next) => {
   switch (err.constructor) {
     case ZodError:
+      err.statusCode = 400;
+      break;
+    case MulterError:
       err.statusCode = 400;
       break;
   }
