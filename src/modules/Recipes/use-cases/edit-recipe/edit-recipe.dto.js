@@ -13,4 +13,5 @@ export const EditRecipeDto = z.object({
       })
     )
     .optional(),
+  tags: z.array(z.string()).optional(),
 });

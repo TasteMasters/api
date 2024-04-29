@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS public.recipes_tags RENAME TO recipe_tags;

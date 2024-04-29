@@ -2,6 +2,7 @@ import { Client } from '../../../../database/database.service.js';
 import { v4 as uuid } from 'uuid';
 import { RecipeEntity } from '../../../entities/recipes.entity.js';
 import { RecipeIngredientRepository } from './recipe-ingredients.repository.js';
+import { RecipeTagsRepository } from './recipe-tags.repository.js';
 
 export class RecipeRepository {
   static async findById(id) {
@@ -13,6 +14,7 @@ export class RecipeRepository {
 
     const user = new RecipeEntity(rows[0]);
     user.ingredients = await RecipeIngredientRepository.findByRecipeId(user.id);
+    user.tags = await RecipeTagsRepository.findByRecipeId(user.id);
 
     return user;
   }
@@ -28,6 +30,7 @@ export class RecipeRepository {
       rows.map(async (row) => {
         const recipe = new RecipeEntity(row);
         recipe.ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
+        recipe.tags = await RecipeTagsRepository.findByRecipeId(recipe.id);
 
         return recipe;
       })
@@ -46,7 +49,7 @@ export class RecipeRepository {
     return true;
   }
 
-  static async create({ author_id, title, description, ingredients }) {
+  static async create({ author_id, title, description, ingredients, tags }) {
     try {
       const recipesCreated = await Client.query(
         'INSERT INTO recipes (id, author_id, title, description, created_at) VALUES ($1,$2,$3,$4,$5) RETURNING *;',
@@ -68,10 +71,17 @@ export class RecipeRepository {
               amount: ingredient.amount,
               image: ingredient.image,
             });
+          }),
+          tags.map(async (tag) => {
+            await RecipeTagsRepository.create({
+              recipe_id: recipe.id,
+              tag_id: tag,
+            });
           })
         );
 
         recipe.ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
+        recipe.tags = await RecipeTagsRepository.findByRecipeId(recipe.id);
       }
 
       return recipe;
@@ -80,7 +90,7 @@ export class RecipeRepository {
     }
   }
 
-  static async update(id, { title, description, ingredients }) {
+  static async update(id, { title, description, ingredients, tags }) {
     const { rows } = await Client.query(
       'UPDATE recipes SET title = COALESCE($1, title), description = COALESCE($2, description), updated_at = $3 WHERE id = $4 RETURNING *;',
       [title, description, new Date(), id]
@@ -123,9 +133,36 @@ export class RecipeRepository {
       );
     }
 
+    if (tags && tags.length > 0) {
+      const recipeTags = await RecipeTagsRepository.findByRecipeId(id);
+
+      await Promise.all(
+        recipeTags.map(async (recipeTag) => {
+          const tag = tags.find((tag) => tag === recipeTag.id);
+
+          if (!tag) {
+            await RecipeTagsRepository.delete(recipeTag.id);
+          }
+
+          tags = tags.filter((tag) => tag !== recipeTag.id);
+        })
+      );
+
+      await Promise.all(
+        tags.map(async (tag) => {
+          await RecipeTagsRepository.create({
+            recipe_id: id,
+            tag_id: tag,
+          });
+        })
+      );
+    }
+
     const recipe = new RecipeEntity(rows[0]);
     ingredients = await RecipeIngredientRepository.findByRecipeId(recipe.id);
+    tags = await RecipeTagsRepository.findByRecipeId(recipe.id);
     recipe.ingredients = ingredients;
+    recipe.tags = tags;
 
     return recipe;
   }
