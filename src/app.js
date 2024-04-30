@@ -3,6 +3,8 @@ import http, { Server } from 'http';
 import errorHandler from './middleware/ErrorHandler.js';
 import registerRoutes from './modules/modules.js';
 import AuthMiddleware from './middleware/AuthMiddleware.js';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 export class App {
   /** @type {express.Express} */
@@ -24,7 +26,10 @@ export class App {
   async middleware() {
     this.express.use(express.json({ limit: '100mb' }));
     this.express.use(express.urlencoded({ limit: '100mb', extended: true }));
+    this.express.use(cookieParser());
     this.express.use(AuthMiddleware);
+    this.express.use(cors({ origin: true, credentials: true }));
+    this.express.use('/static', express.static('uploads'));
   }
 
   async routes() {

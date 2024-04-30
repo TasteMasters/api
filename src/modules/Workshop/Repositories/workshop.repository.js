@@ -1,6 +1,5 @@
 import { Client } from '../../../../database/database.service.js';
 import { WorkshopEntity } from '../../../entities/workshop.entity.js';
-import { v4 as uuid } from 'uuid';
 
 export class WorkshopRepository {
   /**

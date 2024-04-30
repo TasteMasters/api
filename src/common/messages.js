@@ -4,7 +4,7 @@ export const Message = {
   INVALID_DATA:
     'Ocorreu um erro de validação nos dados fornecidos. Por favor, verifique se todos os campos foram preenchidos corretamente.',
   UNAUTHORIZED: 'Sem permissão',
-  INVALID_DATE:'A data fornecida é inválida.',
+  INVALID_DATE: 'A data fornecida é inválida.',
   CREATE_EVENT_SUCCESS: 'Workshop criado com sucesso!',
   CREATE_EVENT_FAIL: 'Houve um erro ao criar o workshop! Tente mais tarde.',
   EVENT_NOT_FOUND: 'Workshop não encontrado',
@@ -14,4 +14,6 @@ export const Message = {
   RECIPE_NOT_FOUND: 'Receita não encontrada',
   UPDATE_EVENT_SUCCESS: 'Workshop Atualizado!',
   UPDATE_EVENT_FAIL: 'Falha ao atualizar informações do workshop.'
+  SIGNIN_SUCCESS: 'Login realizado com sucesso',
+  SIGNUP_SUCCESS: 'Cadastro realizado com sucesso',
 };
