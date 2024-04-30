@@ -1,4 +1,4 @@
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     id uuid NOT NULL,
     name character varying(60) NOT NULL,
