@@ -17,7 +17,7 @@ export class SignInService extends ServiceBase {
     }
 
     const jwt = await JwtService.create({
-      email: user.email,
+      id: user.id,
     });
 
     return {
