@@ -1,4 +1,4 @@
-CREATE TABLE public.recipes
+CREATE TABLE IF NOT EXISTS public.recipes
 (
     id uuid,
     author_id uuid,

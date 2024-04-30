@@ -10,6 +10,8 @@ export const Message = {
   EVENT_NOT_FOUND: 'Workshop não encontrado',
   INVALID_ID: 'ID inválido',
   DELETE_ERROR: 'Erro ao deletar workshop',
-  DELETE_EVENT_SUCCESS: "Workshop excluido!",
+  DELETE_EVENT_SUCCESS: 'Workshop excluido!',
   RECIPE_NOT_FOUND: 'Receita não encontrada',
+  UPDATE_EVENT_SUCCESS: 'Workshop Atualizado!',
+  UPDATE_EVENT_FAIL: 'Falha ao atualizar informações do workshop.'
 };

@@ -1,6 +1,6 @@
-CREATE TABLE workshop_topics (
+CREATE TABLE IF NOT EXISTS workshop_topics (
     id UUID PRIMARY KEY,
-    workshop_id UUID REFERENCES workshops(id),
+    workshop_id UUID REFERENCES public.workshops(id) ON DELETE CASCADE,
     title TEXT,
     estimated_time TEXT,
     description TEXT,
