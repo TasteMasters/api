@@ -1,55 +1,31 @@
-/**
- * Workshop entity class.
- * @typedef {object} WorkshopEntityConstructor
- * @property {string} id - The workshop's identifier.
- * @property {string} description - The description of the workshop.
- * @property {string} category - The category of the workshop.
- * @property {string} difficulty - The difficulty level of the workshop.
- * @property {string} start_date - The start date of the workshop.
- * @property {string} creator_name - The name of the workshop's creator.
- * @property {string} creator_id - The ID of the workshop's creator (reference to users table).
- * @property {string} creator_experience - The experience of the workshop's creator.
- * @property {string[]} ingredients - The ingredients of the workshop.
- * @property {string} image - The image of the workshop.
- * @property {Date} created_at - The creation date of the workshop.
- * @property {Date | null} updated_at - The update date of the workshop.
- */
 export class WorkshopEntity {
-  /** @type {string} */
   #id;
 
-  /** @type {string} */
+  #title;
+
   #description;
 
-  /** @type {string} */
   #category;
 
-  /** @type {string} */
   #difficulty;
 
-  /** @type {string} */
   #start_date;
 
-  /** @type {string} */
   #creator_name;
 
-  /** @type {string} */
   #creator_id;
 
-  /** @type {string} */
   #creator_experience;
 
-  /** @type {string[]} */
   #ingredients;
 
-  /** @type {string} */
   #image;
 
-  /** @type {Date} */
   #created_at;
 
-  /** @type {Date | null} */
   #updated_at;
+
+  #topics;
 
   /**
    * Creates an instance of WorkshopEntity.
@@ -57,6 +33,7 @@ export class WorkshopEntity {
    */
   constructor({
     id,
+    title,
     description,
     category,
     difficulty,
@@ -66,10 +43,12 @@ export class WorkshopEntity {
     creator_experience,
     ingredients,
     image,
+    topics,
     created_at,
     updated_at,
   }) {
     this.#id = id;
+    this.#title = title;
     this.#description = description;
     this.#category = category;
     this.#difficulty = difficulty;
@@ -79,6 +58,7 @@ export class WorkshopEntity {
     this.#creator_experience = creator_experience;
     this.#ingredients = ingredients;
     this.#image = image;
+    this.#topics = topics;
     this.#created_at = created_at;
     this.#updated_at = updated_at;
   }
@@ -86,6 +66,10 @@ export class WorkshopEntity {
   /** Get the workshop's identifier. */
   get id() {
     return this.#id;
+  }
+
+  get title() {
+    return this.#title;
   }
 
   /** Get the workshop's description. */
@@ -101,6 +85,9 @@ export class WorkshopEntity {
   /** Get the workshop's category. */
   get category() {
     return this.#category;
+  }
+  get topics() {
+    return this.#topics;
   }
 
   /** Set the workshop's category. */
@@ -118,6 +105,10 @@ export class WorkshopEntity {
     this.#difficulty = difficulty;
   }
 
+  set title(title) {
+    this.#title = title;
+  }
+
   /** Get the workshop's start date. */
   get start_date() {
     return this.#start_date;
@@ -131,6 +122,10 @@ export class WorkshopEntity {
   /** Get the name of the workshop's creator. */
   get creator_name() {
     return this.#creator_name;
+  }
+
+  set topics(topics) {
+    this.#topics = topics;
   }
 
   /** Get the ID of the workshop's creator. */
@@ -193,8 +188,17 @@ export class WorkshopEntity {
    * @returns {Object} The workshop data in JSON format.
    */
   toJson() {
+    const topics = [];
+
+    if (this.#topics) {
+      for (const topic of this.#topics) {
+        topics.push(topic.toJson());
+      }
+    }
+
     return {
       id: this.#id,
+      title: this.#title,
       description: this.#description,
       category: this.#category,
       difficulty: this.#difficulty,
@@ -203,7 +207,8 @@ export class WorkshopEntity {
       creator_id: this.#creator_id,
       creator_experience: this.#creator_experience,
       ingredients: this.#ingredients,
-      image: this.#image,
+      image: '5fa6458d-c5e5-43a7-abe1-a7e54777e08e.jpg', //this.#image,
+      topics,
       created_at: this.#created_at,
       updated_at: this.#updated_at,
     };

@@ -7,8 +7,6 @@ CREATE TABLE workshops (
     image TEXT,
     start_date DATE,
     creator_id UUID REFERENCES users(id),
-    creator_name TEXT,
-    creator_experience TEXT,
     ingredients TEXT[],
     created_at DATE, 
     updated_at DATE 
