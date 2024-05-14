@@ -207,7 +207,7 @@ export class WorkshopEntity {
       creator_id: this.#creator_id,
       creator_experience: this.#creator_experience,
       ingredients: this.#ingredients,
-      image: '5fa6458d-c5e5-43a7-abe1-a7e54777e08e.jpg', //this.#image,
+      image: this.#image,
       topics,
       created_at: this.#created_at,
       updated_at: this.#updated_at,

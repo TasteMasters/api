@@ -14,7 +14,7 @@ export default class SignupController extends BaseController {
 
       const signup = await new SignupService().execute(data);
 
-      res.cookie('token', signup.jwt, { maxAge: 1000 * 60 * 10, httpOnly: false });
+      res.cookie('token', signup.jwt, { maxAge: 1000 * 60 * 60 * 10, httpOnly: false });
 
       super.send(res, {
         data: {

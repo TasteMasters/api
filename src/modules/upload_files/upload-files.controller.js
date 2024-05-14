@@ -4,7 +4,6 @@ import upload from '../../../multer.config.js';
 export class UploadFilesController extends BaseController {
   method = 'POST';
   path = '/';
-  upload;
 
   before = [upload.single('image')];
 
