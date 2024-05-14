@@ -4,6 +4,7 @@ import FindWorshopByIdController from '../Workshop/use-case/find-workshop/find-w
 import DeleteWorshopController from '../Workshop/use-case/delete-workshops/delete-workshop.controller.js';
 import ModuleBase from '../../class_base/module.base.js';
 import FindUserWorshopsController from './use-case/find-user-workshops/find-workshop.controller.js';
+import UpdateWorkshopController from './use-case/update-workshop/update-workshop.controller.js';
 
 export default class WorkshopModule extends ModuleBase {
   basePath = 'workshops';
@@ -13,5 +14,6 @@ export default class WorkshopModule extends ModuleBase {
     new FindWorshopByIdController(),
     new CreateWorkshopController(),
     new DeleteWorshopController(),
+    new UpdateWorkshopController(),
   ];
 }

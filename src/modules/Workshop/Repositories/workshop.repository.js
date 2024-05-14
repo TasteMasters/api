@@ -2,12 +2,9 @@ import { Client } from '../../../../database/database.service.js';
 import { WorkshopTopicsEntity } from '../../../entities/workshop-topics.entity.js';
 import { WorkshopEntity } from '../../../entities/workshop.entity.js';
 import { v4 as uuid } from 'uuid';
+import { WorkshopTopicsRepository } from './workshop-topics.repository.js';
 
 export class WorkshopRepository {
-  /**
-   * Retrieves all workshops from the database.
-   * @returns {WorkshopEntity[] | undefined} An array of WorkshopEntity instances representing all workshops, or undefined if no workshops are found.
-   */
   static async findAll() {
     const { rows } = await Client.query('SELECT * FROM workshops;');
 
@@ -21,14 +18,12 @@ export class WorkshopRepository {
   }
 
   static async create(workshopData) {
-    const client = await Client.connect(); // Conecte-se ao banco de dados
-
     try {
-      await client.query('BEGIN'); // Inicie a transação
+      await Client.query('BEGIN'); // Inicie a transação
 
       const workshopId = uuid();
 
-      await client.query(
+      await Client.query(
         `INSERT INTO workshops (id, title, description, category, difficulty, image, start_date, creator_id, ingredients, created_at, updated_at)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`,
         [
@@ -47,41 +42,17 @@ export class WorkshopRepository {
       );
 
       for (const topicData of workshopData.topics) {
-        console.log(topicData);
-        await client.query(
-          `INSERT INTO workshop_topics (id, workshop_id, title, estimated_time, description, video_link, completed, created_at, updated_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
-          [
-            uuid(),
-            workshopId,
-            topicData.title,
-            topicData.estimated_time,
-            topicData.description,
-            topicData.video_link,
-            topicData.completed,
-            new Date(),
-            null,
-          ]
-        );
+        await WorkshopTopicsRepository.create(workshopId, topicData);
       }
 
-      await client.query('COMMIT');
+      await Client.query('COMMIT');
 
       return true;
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Erro ao criar workshop e tópicos:', error);
-      return false;
-    } finally {
-      client.release();
+      throw error;
     }
   }
-
-  /**
-   * Finds a workshop by its ID.
-   * @param {number} id - The ID of the workshop to find.
-   * @returns {WorkshopEntity | undefined} The workshop entity if found, or undefined if not found.
-   */
 
   static async findById(id) {
     const { rows } = await Client.query('SELECT * FROM workshops WHERE id = $1;', [id]);
@@ -92,15 +63,7 @@ export class WorkshopRepository {
 
     const workshop = new WorkshopEntity(rows[0]);
 
-    const { rows: rowsTopics } = await Client.query('SELECT * FROM workshop_topics WHERE workshop_id = $1;', [id]);
-
-    let topics = [];
-
-    if (rowsTopics && rowsTopics.length > 0) {
-      rowsTopics.map((row) => topics.push(new WorkshopTopicsEntity(row)));
-    }
-
-    workshop.topics = topics;
+    workshop.topics = await WorkshopTopicsRepository.findByWorkshopId(id);
 
     return workshop;
   }
@@ -123,6 +86,62 @@ export class WorkshopRepository {
 
       return true;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  static async update(id, data) {
+    try {
+      await Client.query('BEGIN'); // Inicie a transação
+
+      await Client.query(
+        `UPDATE workshops
+        SET title = COALESCE($1,title), description = COALESCE($2, description), category = COALESCE($3, category), difficulty = COALESCE($4, difficulty), image = COALESCE($5, image), start_date = COALESCE($6, start_date), ingredients = COALESCE($7, ingredients), updated_at = $8
+        WHERE id = $9;`,
+        [
+          data.title,
+          data.description,
+          data.category,
+          data.difficulty,
+          data.image,
+          data.start_date,
+          data.ingredients,
+          new Date(),
+          id,
+        ]
+      );
+
+      if (data.topics && data.topics.length > 0) {
+        const workshopTopics = await WorkshopTopicsRepository.findByWorkshopId(id);
+
+        await Promise.all(
+          workshopTopics.map(async (topicWorkshop) => {
+            const topic = data.topics.find((topic) => topic.id === topicWorkshop.id);
+
+            console.log(topic);
+
+            if (topic) {
+              await WorkshopTopicsRepository.update(topic.id, topic.toJson());
+            } else {
+              await WorkshopTopicsRepository.delete(topic.id);
+            }
+
+            data.topics = data.topics.filter((topic) => topic.id !== topicWorkshop.id);
+          })
+        );
+
+        await Promise.all(
+          topics.map(async (topic) => {
+            await WorkshopTopicsRepository.create(topic.toJson());
+          })
+        );
+      }
+
+      await Client.query('COMMIT');
+
+      return await WorkshopRepository.findById(id);
+    } catch (error) {
+      await Client.query('ROLLBACK');
       throw error;
     }
   }
