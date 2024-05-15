@@ -65,8 +65,19 @@ export class UserRepository {
 
   static async update(id, data) {
     const userUpdated = await Client.query(
-      'UPDATE users SET name = COALESCE($1, name), email = COALESCE($2, email), experience = COALESCE($3, experience), photo = COALESCE($4, photo), specialization = COALESCE($5, specialization), updated_at = $6 WHERE id = $7 RETURNING *;',
-      [data.name, data.email, data.experience, data.photo, data.specialization, new Date(), id]
+      'UPDATE users SET name = COALESCE($1, name), email = COALESCE($2, email), experience = COALESCE($3, experience), photo = COALESCE($4, photo), specialization = COALESCE($5, specialization), pinterest = COALESCE($6, pinterest), linkedin = COALESCE($7, linkedin), instagram = COALESCE($8, instagram), updated_at = $9 WHERE id = $10 RETURNING *;',
+      [
+        data.name,
+        data.email,
+        data.experience,
+        data.photo,
+        data.specialization,
+        data.pinterest,
+        data.linkedin,
+        data.instagram,
+        new Date(),
+        id,
+      ]
     );
 
     if (!userUpdated || !userUpdated.rows || !userUpdated.rows.length === 0) {

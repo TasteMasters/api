@@ -8,11 +8,27 @@ export class UserEntity {
   #experience;
   #photo;
   #specialization;
+  #pinterest;
+  #linkedin;
+  #instagram;
 
   #created_at;
   #updated_at;
 
-  constructor({ id, name, email, password, experience, photo, specialization, created_at, updated_at }) {
+  constructor({
+    id,
+    name,
+    email,
+    password,
+    experience,
+    photo,
+    specialization,
+    pinterest,
+    linkedin,
+    instagram,
+    created_at,
+    updated_at,
+  }) {
     this.#id = id;
     this.#name = name;
     this.#email = email;
@@ -20,6 +36,9 @@ export class UserEntity {
     this.#experience = experience;
     this.#photo = photo;
     this.#specialization = specialization;
+    this.#pinterest = pinterest;
+    this.#linkedin = linkedin;
+    this.#instagram = instagram;
     this.#created_at = created_at;
     this.#updated_at = updated_at;
   }
@@ -46,6 +65,18 @@ export class UserEntity {
 
   get photo() {
     return this.#photo;
+  }
+
+  get pinterest() {
+    return this.#pinterest;
+  }
+
+  get linkedin() {
+    return this.#linkedin;
+  }
+
+  get instagram() {
+    return this.#instagram;
   }
 
   set password(password) {
@@ -80,6 +111,18 @@ export class UserEntity {
     this.#photo = photo;
   }
 
+  set pinterest(pinterest) {
+    this.#pinterest = pinterest;
+  }
+
+  set linkedin(linkedin) {
+    this.#linkedin = linkedin;
+  }
+
+  set instagram(instagram) {
+    this.#instagram = instagram;
+  }
+
   set specialization(specialization) {
     this.#specialization = specialization;
   }
@@ -96,6 +139,9 @@ export class UserEntity {
       experience: this.#experience,
       photo: this.#photo,
       specialization: this.#specialization,
+      pinterest: this.#pinterest,
+      linkedin: this.#linkedin,
+      instagram: this.#instagram,
       created_at: this.#created_at,
       updated_at: this.#updated_at,
     };
