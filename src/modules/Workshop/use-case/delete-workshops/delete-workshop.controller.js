@@ -3,6 +3,7 @@ import BaseController from '../../../../class_base/controller.base.js';
 import NotFoundException from '../../../../exceptions/NotFoundException.js';
 import { Message } from '../../../../common/messages.js';
 import { WorkshopRepository } from '../../Repositories/workshop.repository.js';
+import UnauthorizedException from '../../../../exceptions/UnauthorizedException.js';
 
 export default class DeleteWorshopController extends BaseController {
   method = 'DELETE';
@@ -23,7 +24,11 @@ export default class DeleteWorshopController extends BaseController {
         throw new NotFoundException(Message.DELETE_ERROR);
       }
 
-      super.send(res, {data: Message.DELETE_EVENT_SUCCESS});
+      if (workshop.creator_id !== req.authUser.id) {
+        throw new UnauthorizedException(Message.UNAUTHORIZED);
+      }
+
+      super.send(res, { data: Message.DELETE_EVENT_SUCCESS });
     } catch (err) {
       next(err);
     }

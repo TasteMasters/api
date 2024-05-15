@@ -14,7 +14,7 @@ export default class UpdateWorkshopController extends BaseController {
 
       const data = UpdateWorkshopDto.parse(req.body);
 
-      super.send(res, { data: await new UpdateWorkshopService().execute(id, data) });
+      super.send(res, { data: await new UpdateWorkshopService().execute(id, data, req.authUser) });
     } catch (err) {
       next(err);
     }
