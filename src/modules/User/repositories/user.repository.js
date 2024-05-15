@@ -88,4 +88,19 @@ export class UserRepository {
 
     return user;
   }
+
+  static async changePassword(id, password) {
+    const userUpdated = await Client.query(
+      'UPDATE users SET password = $1, updated_at = $2 WHERE id = $3 RETURNING *;',
+      [await BCryptService.hash(password), new Date(), id]
+    );
+
+    if (!userUpdated || !userUpdated.rows || !userUpdated.rows.length === 0) {
+      return undefined;
+    }
+
+    const user = new UserEntity(userUpdated.rows[0]);
+
+    return user;
+  }
 }
