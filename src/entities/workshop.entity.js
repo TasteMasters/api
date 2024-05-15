@@ -11,11 +11,7 @@ export class WorkshopEntity {
 
   #start_date;
 
-  #creator_name;
-
   #creator_id;
-
-  #creator_experience;
 
   #ingredients;
 
@@ -38,9 +34,7 @@ export class WorkshopEntity {
     category,
     difficulty,
     start_date,
-    creator_name,
     creator_id,
-    creator_experience,
     ingredients,
     image,
     topics,
@@ -53,9 +47,7 @@ export class WorkshopEntity {
     this.#category = category;
     this.#difficulty = difficulty;
     this.#start_date = start_date;
-    this.#creator_name = creator_name;
     this.#creator_id = creator_id;
-    this.#creator_experience = creator_experience;
     this.#ingredients = ingredients;
     this.#image = image;
     this.#topics = topics;
@@ -119,11 +111,6 @@ export class WorkshopEntity {
     this.#start_date = start_date;
   }
 
-  /** Get the name of the workshop's creator. */
-  get creator_name() {
-    return this.#creator_name;
-  }
-
   set topics(topics) {
     this.#topics = topics;
   }
@@ -131,16 +118,6 @@ export class WorkshopEntity {
   /** Get the ID of the workshop's creator. */
   get creator_id() {
     return this.#creator_id;
-  }
-
-  /** Get the experience of the workshop's creator. */
-  get creator_experience() {
-    return this.#creator_experience;
-  }
-
-  /** Set the experience of the workshop's creator. */
-  set creator_experience(creator_experience) {
-    this.#creator_experience = creator_experience;
   }
 
   /** Get the ingredients of the workshop. */
@@ -203,9 +180,7 @@ export class WorkshopEntity {
       category: this.#category,
       difficulty: this.#difficulty,
       start_date: this.#start_date,
-      creator_name: this.#creator_name,
       creator_id: this.#creator_id,
-      creator_experience: this.#creator_experience,
       ingredients: this.#ingredients,
       image: this.#image,
       topics,

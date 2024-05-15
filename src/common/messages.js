@@ -3,6 +3,8 @@ export const Message = {
   USER_NOT_FOUND: 'Usuário não encontrado',
   INVALID_DATA:
     'Ocorreu um erro de validação nos dados fornecidos. Por favor, verifique se todos os campos foram preenchidos corretamente.',
+  PASSWORDS_NOT_MATCH: 'As senhas não conferem',
+  PASSWORD_INCORRECT: 'Senha incorreta',
   UNAUTHORIZED: 'Sem permissão',
   INVALID_DATE: 'A data fornecida é inválida.',
   CREATE_EVENT_SUCCESS: 'Workshop criado com sucesso!',
