@@ -1,4 +1,4 @@
-CREATE TABLE workshops (
+CREATE TABLE IF NOT EXISTS workshops (
     id UUID PRIMARY KEY,
     title TEXT,
     description TEXT,
