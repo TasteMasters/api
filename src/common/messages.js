@@ -16,7 +16,7 @@ export const Message = {
   DELETE_EVENT_SUCCESS: 'Workshop excluido!',
   RECIPE_NOT_FOUND: 'Receita não encontrada',
   UPDATE_EVENT_SUCCESS: 'Workshop Atualizado!',
-  UPDATE_EVENT_FAIL: 'Falha ao atualizar informações do workshop.'
+  UPDATE_EVENT_FAIL: 'Falha ao atualizar informações do workshop.',
   SIGNIN_SUCCESS: 'Login realizado com sucesso',
   SIGNUP_SUCCESS: 'Cadastro realizado com sucesso',
 };
