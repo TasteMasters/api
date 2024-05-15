@@ -14,7 +14,7 @@ export default class SignInController extends BaseController {
 
       const signin = await new SignInService().execute(data);
 
-      res.cookie('token', signin.jwt, { maxAge: 1000 * 60 * 10, httpOnly: false });
+      res.cookie('token', signin.jwt, { maxAge: 1000 * 60 * 60 * 10, httpOnly: false });
 
       super.send(res, {
         data: {

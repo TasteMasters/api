@@ -4,11 +4,6 @@ import { v4 as uuid } from 'uuid';
 import BCryptService from '../../Auth/bcrypt.service.js';
 
 export class UserRepository {
-  /**
-   *
-   * @param {string} id
-   * @return {UserEntity | undefined}
-   */
   static async findById(id) {
     const { rows } = await Client.query('SELECT * FROM users WHERE id = $1;', [id]);
 
@@ -21,11 +16,6 @@ export class UserRepository {
     return user;
   }
 
-  /**
-   *
-   * @param {string} email
-   * @return {UserEntity | undefined}
-   */
   static async findByEmail(email) {
     const { rows } = await Client.query('SELECT * FROM users WHERE email = $1;', [email]);
 
@@ -54,19 +44,6 @@ export class UserRepository {
     return users;
   }
 
-  /**
-   * @typedef UserCreate
-   * @type {Object}
-   * @property {string} name
-   * @property {string} email
-   * @property {string} password
-   */
-
-  /**
-   *
-   * @param {UserCreate} user
-   * @returns {UserEntity | undefined}
-   */
   static async create({ name, email, password }) {
     try {
       const userCreated = await Client.query(
@@ -84,5 +61,20 @@ export class UserRepository {
     } catch (error) {
       throw error;
     }
+  }
+
+  static async update(id, data) {
+    const userUpdated = await Client.query(
+      'UPDATE users SET name = COALESCE($1, name), email = COALESCE($2, email), experience = COALESCE($3, experience), photo = COALESCE($4, photo), specialization = COALESCE($5, specialization), updated_at = $6 WHERE id = $7 RETURNING *;',
+      [data.name, data.email, data.experience, data.photo, data.specialization, new Date(), id]
+    );
+
+    if (!userUpdated || !userUpdated.rows || !userUpdated.rows.length === 0) {
+      return undefined;
+    }
+
+    const user = new UserEntity(userUpdated.rows[0]);
+
+    return user;
   }
 }

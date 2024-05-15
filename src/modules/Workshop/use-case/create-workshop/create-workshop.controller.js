@@ -2,7 +2,7 @@ import { z } from 'zod';
 import BaseController from '../../../../class_base/controller.base.js';
 import { WorkshopRepository } from '../../Repositories/workshop.repository.js';
 import { Message } from '../../../../common/messages.js';
-import upload from '../../../../../multer.config.js';
+import { CreateWorkshopDto } from './create-workshop.dto.js';
 
 /**
  * Controller class to handle workshop creation requests.
@@ -12,86 +12,22 @@ export default class CreateWorkshopController extends BaseController {
   method = 'POST';
   path = '/';
 
-  before = [upload.single('image')];
-
   async handle(req, res, next) {
     try {
       const ingredientsArray = req.body.ingredients.toString().split(',');
       req.body.ingredients = ingredientsArray;
-      const imagePath = req.file.path;
-      const workshopData = await this.validateRequestWorkshop(req.body);
-      const topicData = await this.validateRequestTopics(req.body.topics);
+      const workshopData = CreateWorkshopDto.parse(req.body);
 
-      await WorkshopRepository.create(workshopData, topicData, imagePath);
+      workshopData.creator_id = req.authUser.id;
 
-      const data = {
-        data_work: workshopData,
-        data_topic: topicData,
-        image: imagePath,
-      };
+      await WorkshopRepository.create(workshopData);
 
       super.send(res, { data: Message.CREATE_EVENT_SUCCESS });
 
       return true;
     } catch (error) {
-      throw new Error(Message.CREATE_EVENT_FAIL);
+      next(error);
     }
-  }
-
-  /**
-   * Validates the request body according to the specified schema.
-   * @param {Object} body - The request body.
-   * @returns {Promise<Object>} The validated workshop data.
-   * @throws {Error} If validation fails.
-   */
-  async validateRequestWorkshop(body) {
-    const workshopSchema = z.object({
-      title: z.string().min(3),
-      description: z.string().min(1),
-      category: z.string(),
-      difficulty: z.string(),
-      start_date: z.string().refine(this.isValidDate),
-      creator_id: z.string().uuid(),
-      creator_name: z.string().min(3),
-      creator_experience: z.string(),
-      ingredients: z.array(z.string()),
-    });
-
-    try {
-      return workshopSchema.parse(body);
-    } catch (error) {
-      throw new Error(Message.INVALID_DATA);
-    }
-  }
-
-  /**
-   * Validates the topics provided in the request body according to the specified schema.
-   * @param {string} topics - The topics provided in the request body.
-   * @returns {Promise<Object[]>} The validated topics data.
-   * @throws {Error} If validation fails.
-   */
-  async validateRequestTopics(topics) {
-    const TopicSchema = z.object({
-      topic_title: z.string().min(3),
-      estimated_time: z.string(),
-      topic_description: z.string().min(30),
-      video_link: z.string().url(),
-      completed: z.boolean(),
-    });
-
-    const newTopics = JSON.parse(topics);
-    const validatedTopics = [];
-
-    for (const topic of newTopics) {
-      try {
-        const validatedTopic = TopicSchema.parse(topic);
-        validatedTopics.push(validatedTopic);
-      } catch (error) {
-        throw new Error(Message.INVALID_DATA);
-      }
-    }
-
-    return validatedTopics;
   }
 
   /**

@@ -8,6 +8,7 @@ export const Message = {
   CREATE_EVENT_SUCCESS: 'Workshop criado com sucesso!',
   CREATE_EVENT_FAIL: 'Houve um erro ao criar o workshop! Tente mais tarde.',
   EVENT_NOT_FOUND: 'Workshop não encontrado',
+  WORKSHOP_NOT_FOUND: 'Workshop não encontrado',
   INVALID_ID: 'ID inválido',
   DELETE_ERROR: 'Erro ao deletar workshop',
   DELETE_EVENT_SUCCESS: 'Workshop excluido!',
