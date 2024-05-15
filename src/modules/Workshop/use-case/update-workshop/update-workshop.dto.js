@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const UpdateWorkshopDto = z.object({
-  id: z.string().uuid().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
   category: z.string().optional(),
@@ -12,6 +11,7 @@ export const UpdateWorkshopDto = z.object({
   topics: z
     .array(
       z.object({
+        id: z.string().uuid().optional(),
         title: z.string(),
         estimated_time: z.string(),
         description: z.string(),

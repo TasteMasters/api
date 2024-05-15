@@ -114,27 +114,30 @@ export class WorkshopRepository {
       if (data.topics && data.topics.length > 0) {
         const workshopTopics = await WorkshopTopicsRepository.findByWorkshopId(id);
 
+        if (workshopTopics && workshopTopics.length > 0) {
+          await Promise.all(
+            workshopTopics.map(async (topicWorkshop) => {
+              const topic = data.topics.find((topic) => topic.id === topicWorkshop.id);
+
+              if (topic) {
+                await WorkshopTopicsRepository.update(topic.id, topic);
+              } else {
+                await WorkshopTopicsRepository.delete(topicWorkshop.id);
+              }
+
+              data.topics = data.topics.filter((topic) => topic.id !== topicWorkshop.id);
+            })
+          );
+        }
+
         await Promise.all(
-          workshopTopics.map(async (topicWorkshop) => {
-            const topic = data.topics.find((topic) => topic.id === topicWorkshop.id);
-
-            console.log(topic);
-
-            if (topic) {
-              await WorkshopTopicsRepository.update(topic.id, topic.toJson());
-            } else {
-              await WorkshopTopicsRepository.delete(topic.id);
-            }
-
-            data.topics = data.topics.filter((topic) => topic.id !== topicWorkshop.id);
+          data.topics.map(async (topic) => {
+            topic.workshop_id = id;
+            await WorkshopTopicsRepository.create(topic);
           })
         );
-
-        await Promise.all(
-          topics.map(async (topic) => {
-            await WorkshopTopicsRepository.create(topic.toJson());
-          })
-        );
+      } else if (data.topics && data.topics.length === 0) {
+        await WorkshopTopicsRepository.deleteByWorkshopId(id);
       }
 
       await Client.query('COMMIT');

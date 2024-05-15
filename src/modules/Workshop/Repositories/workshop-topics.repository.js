@@ -27,6 +27,16 @@ export class WorkshopTopicsRepository {
     return topics;
   }
 
+  static async deleteByWorkshopId(workshopId) {
+    const topicsDeleted = await Client.query('DELETE FROM workshop_topics WHERE workshop_id = $1;', [workshopId]);
+
+    if (topicsDeleted.rowCount === 0) {
+      return false;
+    }
+
+    return true;
+  }
+
   static async create(data) {
     const { rows } = await Client.query(
       `INSERT INTO workshop_topics (id, workshop_id, title, estimated_time, description, video_link, completed, created_at)
