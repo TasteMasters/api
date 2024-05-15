@@ -11,7 +11,6 @@ export class UpdateWorkshopService extends ServiceBase {
       throw new NotFoundException(Message.WORKSHOP_NOT_FOUND);
     }
 
-    console.log(workshop.creator_id, user.id);
     if (workshop.creator_id !== user.id) {
       throw new UnauthorizedException(Message.UNAUTHORIZED);
     }

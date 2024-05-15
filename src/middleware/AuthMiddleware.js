@@ -11,7 +11,6 @@ const AuthMiddleware = async (req, res, next) => {
 
       if (user) req.authUser = user;
     } catch (err) {
-      console.log(err);
       next(err);
     }
   }

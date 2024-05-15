@@ -31,14 +31,12 @@ export default class UpdateWorkshopController extends BaseController {
       const topicData = await this.validateRequestTopics(req.body.topics);
       let imagePath;
 
-      if(req.file.path){
-        const path = await WorkshopRepository.getImagePath(idResult)
-        const imagePathOld =  path.rows[0]
-        console.log(imagePathOld.image)
-        this.deletePhoto('./' + imagePathOld.image)
-        imagePath = req.file.path
+      if (req.file.path) {
+        const path = await WorkshopRepository.getImagePath(idResult);
+        const imagePathOld = path.rows[0];
+        this.deletePhoto('./' + imagePathOld.image);
+        imagePath = req.file.path;
       }
-
 
       await WorkshopRepository.update(idResult, workshopData, topicData, imagePath);
 
@@ -109,7 +107,6 @@ export default class UpdateWorkshopController extends BaseController {
     try {
       // Verifica se o arquivo existe
       const exists = await fs.access(filePath);
-      console.log(exists)
 
       // Exclui o arquivo
       const exist = await fs.unlink(filePath);
