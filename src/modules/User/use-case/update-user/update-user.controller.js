@@ -14,7 +14,7 @@ export default class UpdateUsersController extends BaseController {
 
       const data = UpdateUserDto.parse(req.body);
 
-      super.send(res, { data: await new UpdateUserService().execute(id, data, req.userAuth) });
+      super.send(res, { data: await new UpdateUserService().execute(id, data, req.authUser) });
     } catch (err) {
       next(err);
     }
