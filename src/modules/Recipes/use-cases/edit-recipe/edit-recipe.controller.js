@@ -14,7 +14,7 @@ export default class EditRecipeController extends BaseController {
 
       const data = EditRecipeDto.parse(req.body);
 
-      super.send(res, { data: await new EditRecipeService().execute(id, data, req.userAuth) });
+      super.send(res, { data: await new EditRecipeService().execute(id, data, req.authUser) });
     } catch (err) {
       next(err);
     }

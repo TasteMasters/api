@@ -4,14 +4,14 @@ import UnauthorizedException from '../../../../exceptions/UnauthorizedException.
 import { UserRepository } from '../../../User/repositories/user.repository.js';
 
 export class UpdateUserService extends ServiceBase {
-  async execute(id, data, userAuth) {
+  async execute(id, data, authUser) {
     const user = await UserRepository.findById(id);
 
     if (!user) {
       throw new NotFoundException(Message.USER_NOT_FOUND);
     }
 
-    if (user.id !== userAuth.id) {
+    if (user.id !== authUser.id) {
       throw new UnauthorizedException(Message.UNAUTHORIZED);
     }
 
